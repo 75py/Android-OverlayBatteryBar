@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name" translatable="false">Overlay Battery Bar</string>
+    <string name="msg_running_title">Overlay Battery Bar is running</string>
+    <string name="msg_running_text">Tap to disable "Overlay Battery Bar".</string>
+    <string name="request_overlay_permisson">Allow "display over other apps"</string>
+    <string name="overlay_permission_is_allowed">"display over other apps" is Allowed</string>
+    <string name="switch_battery_bar_on">Stop Battery Bar</string>
+    <string name="switch_battery_bar_off">Start Battery Bar</string>
+    <string name="show_on_status_bar">Show on the status bar</string>
+    <string name="action_more" translatable="false">More</string>
+    <string name="action_license" translatable="false">Open Source License</string>
+</resources>

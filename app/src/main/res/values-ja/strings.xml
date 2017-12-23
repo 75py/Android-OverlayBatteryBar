@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="msg_running_title">サービスを実行中です</string>
+    <string name="msg_running_text">タップしてOverlay Battery Bar を無効にします。</string>
+    <string name="request_overlay_permisson">「他のアプリの上に重ねて表示」を許可する</string>
+    <string name="overlay_permission_is_allowed">「他のアプリの上に重ねて表示」を許可されています。</string>
+    <string name="switch_battery_bar_on">停止する</string>
+    <string name="switch_battery_bar_off">開始する</string>
+    <string name="show_on_status_bar">ステータスバーの上に表示する</string>
+</resources>

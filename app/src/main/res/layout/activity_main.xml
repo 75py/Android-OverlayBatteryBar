@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="canDrawOverlays"
+            type="boolean" />
+
+        <import type="android.os.Build" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="isBatteryBarEnabled"
+            type="boolean" />
+
+        <variable
+            name="statusBarHeight"
+            type="int" />
+
+        <variable
+            name="batteryBarWidth"
+            type="int" />
+
+        <variable
+            name="showOnStatusBar"
+            type="boolean" />
+
+        <variable
+            name="onProgressChanged"
+            type="android.databinding.adapters.SeekBarBindingAdapter.OnProgressChanged" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/margin">
+
+        <Button
+            android:id="@+id/button_request_overlay_permisson"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin"
+            android:enabled="@{!canDrawOverlays}"
+            android:onClick="onClick"
+            android:text="@{canDrawOverlays ? @string/overlay_permission_is_allowed : @string/request_overlay_permisson}"
+            android:visibility="@{Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? View.VISIBLE : View.GONE}" />
+
+        <ToggleButton
+            android:id="@+id/switch_battery_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
+            android:checked="@{isBatteryBarEnabled}"
+            android:enabled="@{canDrawOverlays}"
+            android:onClick="onClick"
+            android:textOff="@string/switch_battery_bar_off"
+            android:textOn="@string/switch_battery_bar_on" />
+
+        <SeekBar
+            android:id="@+id/seekbar_battery_bar_width"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:enabled="@{canDrawOverlays &amp;&amp; isBatteryBarEnabled}"
+            android:max="@{statusBarHeight}"
+            android:onProgressChanged="@{onProgressChanged}"
+            android:progress="@{batteryBarWidth}" />
+
+        <CheckBox
+            android:id="@+id/checkbox_show_on_status_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:checked="@{showOnStatusBar}"
+            android:enabled="@{canDrawOverlays &amp;&amp; isBatteryBarEnabled}"
+            android:onClick="onClick"
+            android:text="@string/show_on_status_bar" />
+
+    </LinearLayout>
+</layout>

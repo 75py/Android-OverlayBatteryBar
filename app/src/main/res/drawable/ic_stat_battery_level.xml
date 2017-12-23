@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@drawable/ic_stat_battery_alert"
+        android:maxLevel="15"
+        android:minLevel="0" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_20"
+        android:maxLevel="29"
+        android:minLevel="16" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_30"
+        android:maxLevel="49"
+        android:minLevel="30" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_50"
+        android:maxLevel="59"
+        android:minLevel="50" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_60"
+        android:maxLevel="79"
+        android:minLevel="60" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_80"
+        android:maxLevel="89"
+        android:minLevel="80" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_90"
+        android:maxLevel="99"
+        android:minLevel="90" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_full"
+        android:maxLevel="100"
+        android:minLevel="100" />
+
+    <!-- charging -->
+    <item
+        android:drawable="@drawable/ic_stat_battery_alert"
+        android:maxLevel="1015"
+        android:minLevel="1000" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_20_charging"
+        android:maxLevel="1029"
+        android:minLevel="1016" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_30_charging"
+        android:maxLevel="1049"
+        android:minLevel="1030" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_50_charging"
+        android:maxLevel="1059"
+        android:minLevel="1050" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_60_charging"
+        android:maxLevel="1079"
+        android:minLevel="1060" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_80_charging"
+        android:maxLevel="1089"
+        android:minLevel="1080" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_90_charging"
+        android:maxLevel="1099"
+        android:minLevel="1090" />
+    <item
+        android:drawable="@drawable/ic_stat_battery_full_charging"
+        android:maxLevel="1100"
+        android:minLevel="1100" />
+</level-list>
