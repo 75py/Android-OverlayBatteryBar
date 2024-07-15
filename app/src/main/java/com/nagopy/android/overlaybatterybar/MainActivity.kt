@@ -1,8 +1,9 @@
 package com.nagopy.android.overlaybatterybar
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.databinding.DataBindingUtil
-import android.databinding.adapters.SeekBarBindingAdapter
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.adapters.SeekBarBindingAdapter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -78,6 +79,7 @@ class MainActivity : KodeinAppCompatActivity(), SeekBarBindingAdapter.OnProgress
         serviceHandler.startService()
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         when (seekBar?.id) {
             R.id.seekbar_battery_bar_width -> {
@@ -93,8 +95,8 @@ class MainActivity : KodeinAppCompatActivity(), SeekBarBindingAdapter.OnProgress
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.menu_license -> {
                 startActivity(Intent(this, LicenseActivity::class.java))
             }

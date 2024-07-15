@@ -1,8 +1,8 @@
 package com.nagopy.android.overlaybatterybar
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.webkit.WebView
+import androidx.appcompat.app.AppCompatActivity
 
 class LicenseActivity : AppCompatActivity() {
 
