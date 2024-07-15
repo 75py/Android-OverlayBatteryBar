@@ -1,19 +1,22 @@
 package com.nagopy.android.overlaybatterybar
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.databinding.DataBindingUtil
-import android.databinding.adapters.SeekBarBindingAdapter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.SeekBar
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.adapters.SeekBarBindingAdapter
 import com.github.salomonbrys.kodein.android.KodeinAppCompatActivity
 import com.github.salomonbrys.kodein.instance
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.nagopy.android.overlaybatterybar.databinding.ActivityMainBinding
 import com.nagopy.android.overlayviewmanager.OverlayViewManager
 import timber.log.Timber
+
 
 class MainActivity : KodeinAppCompatActivity(), SeekBarBindingAdapter.OnProgressChanged {
 
@@ -78,6 +81,7 @@ class MainActivity : KodeinAppCompatActivity(), SeekBarBindingAdapter.OnProgress
         serviceHandler.startService()
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         when (seekBar?.id) {
             R.id.seekbar_battery_bar_width -> {
@@ -93,10 +97,10 @@ class MainActivity : KodeinAppCompatActivity(), SeekBarBindingAdapter.OnProgress
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.menu_license -> {
-                startActivity(Intent(this, LicenseActivity::class.java))
+                startActivity(Intent(this, OssLicensesMenuActivity::class.java))
             }
         }
         return super.onOptionsItemSelected(item)

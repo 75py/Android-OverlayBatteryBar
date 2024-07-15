@@ -7,10 +7,11 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.content.res.Configuration
 import android.os.Build
 import android.os.IBinder
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import com.github.salomonbrys.kodein.android.KodeinService
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
@@ -43,13 +44,14 @@ class MainService : KodeinService() {
                         Intent(this, MainActivity::class.java)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
-                        PendingIntent.FLAG_UPDATE_CURRENT))
+                    PendingIntent.FLAG_IMMUTABLE or
+                            PendingIntent.FLAG_UPDATE_CURRENT))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             n = n.setCategory(Notification.CATEGORY_SERVICE)
-                    .setVisibility(Notification.VISIBILITY_PUBLIC)
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         }
-        startForeground(1, n.build())
+        startForegroundCompat(1, n.build())
 
         batteryBarDelegate.batteryChangedCallback = { level: Int, _: Int, isCharging: Boolean ->
             val iconLevel = if (isCharging) {
@@ -58,7 +60,15 @@ class MainService : KodeinService() {
                 level
             }
             n.setSmallIcon(R.drawable.ic_stat_battery_level, iconLevel)
-            startForeground(1, n.build())
+            startForegroundCompat(1, n.build())
+        }
+    }
+
+    private fun startForegroundCompat(id: Int, notification: Notification) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(id, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+        } else {
+            startForeground(id, notification)
         }
     }
 
@@ -91,7 +101,7 @@ class MainService : KodeinService() {
         super.onDestroy()
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         batteryBarDelegate.stop()
         batteryBarDelegate.start()

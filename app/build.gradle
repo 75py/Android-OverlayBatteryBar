@@ -1,19 +1,19 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-//apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.cookpad.android.licensetools'
-apply plugin: 'jacoco-android'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
+    id "com.google.android.gms.oss-licenses-plugin"
+}
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    namespace "com.nagopy.android.overlaybatterybar"
+    compileSdk 34
     defaultConfig {
         applicationId "com.nagopy.android.overlaybatterybar"
-        minSdkVersion 19
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0.0"
+        minSdkVersion 21
+        targetSdkVersion 34
+        versionCode 2
+        versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -29,43 +29,30 @@ android {
         unitTests.returnDefaultValues = true
         unitTests.includeAndroidResources = true
     }
-}
-
-// https://github.com/arturdm/jacoco-android-gradle-plugin/issues/37#issuecomment-345897336
-project.afterEvaluate {
-    android.applicationVariants.all { variant ->
-        def realVariantName = variant.name
-        def variantName = variant.name.capitalize()
-
-        def task = project.tasks["jacocoTest${variantName}UnitTestReport"]
-        def defaultExcludes = task.classDirectories.excludes
-
-        def excludes = defaultExcludes // + [...]
-        excludes += "android/**/*.class"
-
-        def kotlinDebugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/${realVariantName}", excludes: excludes)
-
-        task.classDirectories.excludes = excludes
-        task.classDirectories += kotlinDebugTree
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        buildConfig true
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.android.support:support-v4:27.1.0'
+    implementation("androidx.appcompat:appcompat:1.7.0")
     implementation 'com.github.salomonbrys.kodein:kodein:4.1.0'
     implementation 'com.github.salomonbrys.kodein:kodein-conf:4.1.0'
     implementation 'com.github.salomonbrys.kodein:kodein-android:4.1.0'
-    implementation 'com.jakewharton.timber:timber:4.6.0'
-    implementation 'com.nagopy.android:overlayviewmanager:1.1.0'
-    kapt 'com.android.databinding:compiler:3.0.1'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'com.github.75py.Android-OverlayViewManager:overlayviewmanager:2.0.0'
+    kapt 'com.android.databinding:compiler:3.1.4'
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation "org.mockito:mockito-core:2.13.0"
-    testImplementation "org.robolectric:robolectric:3.6.1"
+    implementation "com.google.android.gms:play-services-oss-licenses:17.1.0"
 
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation "org.mockito:mockito-core:5.12.0"
+    testImplementation "org.robolectric:robolectric:4.13"
+
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
