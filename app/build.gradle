@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
+    id "com.google.android.gms.oss-licenses-plugin"
 }
 
 android {
@@ -45,6 +46,8 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.github.75py.Android-OverlayViewManager:overlayviewmanager:2.0.0'
     kapt 'com.android.databinding:compiler:3.1.4'
+
+    implementation "com.google.android.gms:play-services-oss-licenses:17.1.0"
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.mockito:mockito-core:5.12.0"
