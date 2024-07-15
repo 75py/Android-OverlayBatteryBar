@@ -1,7 +1,6 @@
-# Android-OverlayBatteryBar [![Build Status](https://travis-ci.org/75py/Android-OverlayBatteryBar.svg?branch=master)](https://travis-ci.org/75py/Android-OverlayBatteryBar/) [![codecov](https://codecov.io/gh/75py/Android-OverlayBatteryBar/branch/master/graph/badge.svg)](https://codecov.io/gh/75py/Android-OverlayBatteryBar) [![codebeat](https://codebeat.co/badges/4bdda81e-1cd5-4215-a629-52848e532013)](https://codebeat.co/projects/github-com-75py-android-overlaybatterybar-master)
+# Android-OverlayBatteryBar [![codebeat badge](https://codebeat.co/badges/085e14f4-4187-4497-ae2b-3ed67c42e41d)](https://codebeat.co/projects/github-com-75py-android-overlaybatterybar-main)
 
-Show battery percentages by the white bar.  
-You can check the remaining battery level during full screen mode such as gaming.
+Overlay Battery Bar is an Android application that displays a battery level bar overlay on the screen. It allows users to easily monitor their battery status with a visual indicator that remains visible even when other apps are open.
 
 <img src="screenshot.png" width="270" height="480">
 
