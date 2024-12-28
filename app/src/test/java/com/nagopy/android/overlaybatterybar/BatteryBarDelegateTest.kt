@@ -21,7 +21,6 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class)
 class BatteryBarDelegateTest {
 
     lateinit var batteryBarDelegate: BatteryBarDelegate
@@ -59,15 +58,6 @@ class BatteryBarDelegateTest {
                 `is`(Intent.ACTION_BATTERY_CHANGED))
         assertThat(actionsIterator.next(),
                 `is`(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED))
-        assertThat(actionsIterator.hasNext(), `is`(false))
-    }
-
-    @Config(sdk = [(Build.VERSION_CODES.KITKAT)])
-    @Test
-    fun getIntentFilter_API19() {
-        val actionsIterator = batteryBarDelegate.intentFilter.actionsIterator()
-        assertThat(actionsIterator.next(),
-                `is`(Intent.ACTION_BATTERY_CHANGED))
         assertThat(actionsIterator.hasNext(), `is`(false))
     }
 

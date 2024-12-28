@@ -2,6 +2,7 @@ package com.nagopy.android.overlaybatterybar
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.res.Configuration
 import android.os.Build
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.android.androidServiceScope
@@ -25,7 +26,6 @@ import org.robolectric.android.controller.ServiceController
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class)
 class MainServiceTest {
 
     lateinit var app: App
@@ -96,7 +96,7 @@ class MainServiceTest {
 
     @Test
     fun onConfigurationChanged() {
-        mainServiceController.get().onConfigurationChanged(null)
+        mainServiceController.get().onConfigurationChanged(mock(Configuration::class.java))
         verify(batteryBarDelegate, times(1)).stop()
         verify(batteryBarDelegate, times(1)).start()
     }

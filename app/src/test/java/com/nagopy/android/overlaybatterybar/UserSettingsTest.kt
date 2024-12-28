@@ -10,10 +10,8 @@ import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
-import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class)
 class UserSettingsTest {
 
     lateinit var app: App
