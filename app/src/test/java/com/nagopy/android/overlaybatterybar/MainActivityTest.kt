@@ -1,13 +1,13 @@
 package com.nagopy.android.overlaybatterybar
 
 import android.widget.Switch
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.singleton
 import com.nagopy.android.overlayviewmanager.OverlayViewManager
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.singleton
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
@@ -35,17 +35,15 @@ class MainActivityTest {
     @Mock
     lateinit var switchView: Switch
 
-    val testModule = Kodein.Module(allowSilentOverride = true) {
-        bind<OverlayViewManager>() with singleton { overlayViewManager }
-        bind<UserSettings>() with singleton { userSettings }
-        bind<MainService.Handler>() with singleton { serviceHandler }
-    }
-
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         app = RuntimeEnvironment.application.asApp()
-        app.kodein.addImport(testModule, true)
+        app.di = DI {
+            bind<OverlayViewManager>() with singleton { overlayViewManager }
+            bind<UserSettings>() with singleton { userSettings }
+            bind<MainService.Handler>() with singleton { serviceHandler }
+        }
 
         mainActivityController = Robolectric.buildActivity(MainActivity::class.java).create()
     }

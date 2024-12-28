@@ -8,17 +8,21 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.adapters.SeekBarBindingAdapter
-import com.github.salomonbrys.kodein.android.KodeinAppCompatActivity
-import com.github.salomonbrys.kodein.instance
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.nagopy.android.overlaybatterybar.databinding.ActivityMainBinding
 import com.nagopy.android.overlayviewmanager.OverlayViewManager
+import org.kodein.di.DIAware
 import timber.log.Timber
 
 
-class MainActivity : KodeinAppCompatActivity(), SeekBarBindingAdapter.OnProgressChanged {
+class MainActivity : AppCompatActivity(), SeekBarBindingAdapter.OnProgressChanged, DIAware {
+
+    override val di by closestDI()
 
     val overlayViewManager: OverlayViewManager by instance()
     val userSettings: UserSettings by instance()

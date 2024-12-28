@@ -8,50 +8,36 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import android.preference.PreferenceManager
-import com.github.salomonbrys.kodein.*
-import com.github.salomonbrys.kodein.android.androidServiceScope
-import com.github.salomonbrys.kodein.conf.ConfigurableKodein
 import com.nagopy.android.overlayviewmanager.OverlayViewManager
+import org.kodein.di.*
 import timber.log.Timber
 
-class App : Application(), KodeinAware {
+class App : Application(), DIAware {
 
     override fun onCreate() {
         super.onCreate()
-
-        resetInjection()
-
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
         OverlayViewManager.init(this)
     }
 
-    override val kodein = ConfigurableKodein(mutable = true)
-
-    fun resetInjection() {
-        kodein.clear()
-        kodein.addImport(appDependencies(), true)
-    }
-
-    private fun appDependencies(): Kodein.Module {
-        return Kodein.Module(allowSilentOverride = true) {
-            bind<OverlayViewManager>() with singleton { OverlayViewManager.getInstance() }
-            bind<SharedPreferences>() with singleton { PreferenceManager.getDefaultSharedPreferences(this@App) }
-            bind<PowerManager>() with singleton { getSystemService(Context.POWER_SERVICE) as PowerManager }
-            bind<NotificationManager>() with singleton { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
-            bind<Handler>() with singleton { Handler(Looper.getMainLooper()) }
-            bind<UserSettings>() with singleton {
-                UserSettings(instance())
-            }
-            bind<MainService.Handler>() with singleton { MainService.Handler(instance()) }
-
-            bind<BatteryBarDelegate>() with scopedSingleton(androidServiceScope) {
-                BatteryBarDelegate(instance(), instance(), instance(), instance())
-            }
+    override var di = DI {
+        bind<Context>() with singleton { this@App }
+        bind<Application>() with singleton { this@App }
+        bind<OverlayViewManager>() with singleton { OverlayViewManager.getInstance() }
+        bind<SharedPreferences>() with singleton { PreferenceManager.getDefaultSharedPreferences(instance()) }
+        bind<PowerManager>() with singleton { instance<Application>().getSystemService(POWER_SERVICE) as PowerManager }
+        bind<NotificationManager>() with singleton { instance<Context>().getSystemService(NOTIFICATION_SERVICE) as NotificationManager }
+        bind<Handler>() with singleton { Handler(Looper.getMainLooper()) }
+        bind<UserSettings>() with singleton {
+            UserSettings(instance())
+        }
+        bind<MainService.Handler>() with singleton { MainService.Handler(instance()) }
+        bind<BatteryBarDelegate>() with singleton {
+            BatteryBarDelegate(instance(), instance(), instance(), instance())
         }
     }
-
 }
 
 fun Context.asApp() = this.applicationContext as App

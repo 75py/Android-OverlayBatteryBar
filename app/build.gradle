@@ -44,9 +44,9 @@ kotlin {
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation 'com.github.salomonbrys.kodein:kodein:4.1.0'
-    implementation 'com.github.salomonbrys.kodein:kodein-conf:4.1.0'
-    implementation 'com.github.salomonbrys.kodein:kodein-android:4.1.0'
+    implementation 'org.kodein.di:kodein-di:7.23.1'
+    implementation 'org.kodein.di:kodein-di-conf-jvm:7.23.1'
+    implementation 'org.kodein.di:kodein-di-framework-android-x:7.23.1'
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.github.75py.Android-OverlayViewManager:overlayviewmanager:2.0.0'
     kapt 'com.android.databinding:compiler:3.1.4'
