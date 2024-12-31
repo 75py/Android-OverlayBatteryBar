@@ -3,7 +3,7 @@ package com.nagopy.android.overlaybatterybar
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
