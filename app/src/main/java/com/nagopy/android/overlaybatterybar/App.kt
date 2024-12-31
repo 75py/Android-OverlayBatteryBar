@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.BatteryManager
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
@@ -30,12 +31,13 @@ class App : Application(), DIAware {
         bind<PowerManager>() with singleton { instance<Application>().getSystemService(POWER_SERVICE) as PowerManager }
         bind<NotificationManager>() with singleton { instance<Context>().getSystemService(NOTIFICATION_SERVICE) as NotificationManager }
         bind<Handler>() with singleton { Handler(Looper.getMainLooper()) }
+        bind<BatteryManager>() with singleton { instance<Context>().getSystemService(BATTERY_SERVICE) as BatteryManager }
         bind<UserSettings>() with singleton {
             UserSettings(instance())
         }
         bind<MainService.Handler>() with singleton { MainService.Handler(instance()) }
         bind<BatteryBarDelegate>() with singleton {
-            BatteryBarDelegate(instance(), instance(), instance(), instance())
+            BatteryBarDelegate(instance(), instance(), instance(), instance(), instance())
         }
     }
 }

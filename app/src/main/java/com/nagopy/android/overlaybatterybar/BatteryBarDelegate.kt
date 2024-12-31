@@ -19,6 +19,7 @@ import timber.log.Timber
 class BatteryBarDelegate(
         val context: Context
         , val powerManager: PowerManager
+        , val batteryManager: BatteryManager
         , val overlayViewManager: OverlayViewManager
         , val userSettings: UserSettings) {
 
@@ -37,8 +38,6 @@ class BatteryBarDelegate(
         }
     }
 
-    var batteryLevel: Int = 0
-    var batteryScale: Int = 0
     var isStarted: Boolean = false
 
     fun start() {
@@ -65,10 +64,12 @@ class BatteryBarDelegate(
 
     fun isEnabled(): Boolean = userSettings.isBatteryBarEnabled()
 
-    fun updateBatteryLevel(level: Int, scale: Int) {
-        batteryLevel = level
-        batteryScale = scale
-        val newWidth = overlayViewManager.displayWidth * level / scale.toFloat()
+    fun updateBatteryLevel() {
+        val batteryLevel = getCurrentBatteryLevel()
+        val chargeLimit = userSettings.getBatteryChargeLimit()
+        val newWidth = overlayViewManager.displayWidth * batteryLevel / chargeLimit
+        Timber.d("batteryLevel=%d, chargeLimit=%d, width=%d", batteryLevel, chargeLimit, newWidth)
+
         barView.apply {
             setWidth(newWidth.toInt())
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -77,31 +78,32 @@ class BatteryBarDelegate(
                 allowViewToExtendOutsideScreen(userSettings.showOnStatusBar())
             }
         }
-        Timber.d("level = %d, scale = %d, width = %f", level, scale, newWidth)
 
         barView.update()
+    }
+
+    fun getCurrentBatteryLevel(): Int {
+        return batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
     }
 
     val receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 Intent.ACTION_BATTERY_CHANGED -> {
-                    val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-                    val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
-                    updateBatteryLevel(level, scale)
+                    updateBatteryLevel()
 
                     val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
                     val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
-                    batteryChangedCallback?.invoke(level, scale, isCharging)
+                    batteryChangedCallback?.invoke(getCurrentBatteryLevel(), isCharging)
                 }
                 PowerManager.ACTION_POWER_SAVE_MODE_CHANGED -> {
-                    updateBatteryLevel(batteryLevel, batteryScale)
+                    updateBatteryLevel()
                 }
             }
 
         }
     }
 
-    var batteryChangedCallback: ((level: Int, scale: Int, isCharging: Boolean) -> Unit)? = null
+    var batteryChangedCallback: ((level: Int, isCharging: Boolean) -> Unit)? = null
 
 }

@@ -58,4 +58,18 @@ class UserSettingsTest {
         assertThat(userSettings.showOnStatusBar(), `is`(true))
     }
 
+    @Test
+    fun testBatteryChargeLimit() {
+        assertThat(userSettings.getBatteryChargeLimit(), `is`(100))
+
+        userSettings.setBatteryChargeLimit(50)
+        assertThat(userSettings.getBatteryChargeLimit(), `is`(50))
+
+        userSettings.setBatteryChargeLimit(0)
+        assertThat(userSettings.getBatteryChargeLimit(), `is`(1))
+
+        userSettings.setBatteryChargeLimit(101)
+        assertThat(userSettings.getBatteryChargeLimit(), `is`(100))
+    }
+
 }

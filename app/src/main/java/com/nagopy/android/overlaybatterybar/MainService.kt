@@ -53,7 +53,7 @@ class MainService : Service(), DIAware {
         }
         startForegroundCompat(1, n.build())
 
-        batteryBarDelegate.batteryChangedCallback = { level: Int, _: Int, isCharging: Boolean ->
+        batteryBarDelegate.batteryChangedCallback = { level: Int, isCharging: Boolean ->
             val iconLevel = if (isCharging) {
                 level + 1000
             } else {

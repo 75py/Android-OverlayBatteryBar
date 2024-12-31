@@ -31,6 +31,10 @@
         <variable
             name="onProgressChanged"
             type="androidx.databinding.adapters.SeekBarBindingAdapter.OnProgressChanged" />
+
+        <variable
+            name="batteryChargeLimit"
+            type="int" />
     </data>
 
     <LinearLayout
@@ -75,11 +79,21 @@
             android:id="@+id/checkbox_show_on_status_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin"
             android:checked="@{showOnStatusBar}"
             android:enabled="@{canDrawOverlays &amp;&amp; isBatteryBarEnabled}"
             android:onClick="onClick"
             android:text="@string/show_on_status_bar" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/battery_charge_limit" />
+
+        <NumberPicker
+            android:id="@+id/number_picker_charge_limit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="@{canDrawOverlays &amp;&amp; isBatteryBarEnabled}" />
     </LinearLayout>
 </layout>

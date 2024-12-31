@@ -7,6 +7,7 @@
     <string name="switch_battery_bar_on">Stop Battery Bar</string>
     <string name="switch_battery_bar_off">Start Battery Bar</string>
     <string name="show_on_status_bar">Show on the status bar</string>
+    <string name="battery_charge_limit">Battery Charge Limit (%)</string>
     <string name="action_more" translatable="false">More</string>
     <string name="action_license" translatable="false">Open Source License</string>
 </resources>
