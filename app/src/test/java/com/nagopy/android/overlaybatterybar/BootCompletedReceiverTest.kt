@@ -1,6 +1,5 @@
 package com.nagopy.android.overlaybatterybar
 
-import android.content.Intent
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,9 +19,6 @@ class BootCompletedReceiverTest {
     @Mock
     lateinit var serviceHandler: MainService.Handler
 
-    @Mock
-    lateinit var intent: Intent
-
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
@@ -41,7 +37,6 @@ class BootCompletedReceiverTest {
         `when`(userSettings.isBatteryBarEnabled()).thenReturn(true)
         bootCompletedReceiver.execute(userSettings, serviceHandler)
         verify(serviceHandler, times(1)).startService()
-
     }
 
 }
