@@ -22,7 +22,7 @@ class UserSettingsTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application)
         sharedPreferences.edit().clear()
         userSettings = UserSettings(sharedPreferences)

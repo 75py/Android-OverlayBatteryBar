@@ -38,7 +38,7 @@ class MainServiceTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         app = RuntimeEnvironment.getApplication().asApp()
         app.di = DI {
             bind<BatteryBarDelegate>() with singleton { batteryBarDelegate }

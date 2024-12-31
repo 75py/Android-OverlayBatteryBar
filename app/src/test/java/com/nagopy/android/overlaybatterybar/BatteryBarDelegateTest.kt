@@ -40,7 +40,7 @@ class BatteryBarDelegateTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         context = spy(RuntimeEnvironment.application)
         doNothing().`when`(context).unregisterReceiver(any(BroadcastReceiver::class.java))
         `when`(overlayViewManager.newOverlayView(any(View::class.java))).thenReturn(overlayView)
