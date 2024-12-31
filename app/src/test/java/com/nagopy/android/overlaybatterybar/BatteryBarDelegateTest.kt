@@ -3,13 +3,14 @@ package com.nagopy.android.overlaybatterybar
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.BatteryManager
 import android.os.Build
 import android.os.PowerManager
 import android.view.View
 import com.nagopy.android.overlayviewmanager.OverlayView
 import com.nagopy.android.overlayviewmanager.OverlayViewManager
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,6 +30,8 @@ class BatteryBarDelegateTest {
     @Mock
     lateinit var powerManager: PowerManager
     @Mock
+    lateinit var batteryManager: BatteryManager
+    @Mock
     lateinit var overlayViewManager: OverlayViewManager
     @Mock
     lateinit var userSettings: UserSettings
@@ -37,12 +40,12 @@ class BatteryBarDelegateTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         context = spy(RuntimeEnvironment.application)
         doNothing().`when`(context).unregisterReceiver(any(BroadcastReceiver::class.java))
         `when`(overlayViewManager.newOverlayView(any(View::class.java))).thenReturn(overlayView)
 
-        batteryBarDelegate = BatteryBarDelegate(context, powerManager, overlayViewManager, userSettings)
+        batteryBarDelegate = BatteryBarDelegate(context, powerManager, batteryManager, overlayViewManager, userSettings)
 
         reset(powerManager)
         reset(overlayViewManager)
@@ -123,20 +126,27 @@ class BatteryBarDelegateTest {
         verify(userSettings, times(1)).isBatteryBarEnabled()
     }
 
+    @Test
+    fun getCurrentBatteryLevel() {
+        `when`(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)).thenReturn(80)
+
+        val batteryLevel = batteryBarDelegate.getCurrentBatteryLevel()
+        verify(batteryManager, times(1)).getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+        assertThat(batteryLevel, `is`(80))
+    }
+
     @Config(sdk = [(Build.VERSION_CODES.O)])
     @Test
     fun updateBatteryLevel_API26() {
-        val level = 80
-        val scale = 100
         `when`(overlayViewManager.displayWidth).thenReturn(1000)
         `when`(userSettings.showOnStatusBar()).thenReturn(true)
+        `when`(userSettings.getBatteryChargeLimit()).thenReturn(80)
         `when`(powerManager.isPowerSaveMode).thenReturn(false)
+        `when`(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)).thenReturn(80)
 
-        batteryBarDelegate.updateBatteryLevel(level, scale)
+        batteryBarDelegate.updateBatteryLevel()
 
-        assertThat(batteryBarDelegate.batteryLevel, `is`(level))
-        assertThat(batteryBarDelegate.batteryScale, `is`(scale))
-        verify(overlayView, times(1)).setWidth(800)
+        verify(overlayView, times(1)).setWidth(1000)
         verify(overlayView, times(1)).allowViewToExtendOutsideScreen(true)
         verify(userSettings, times(1)).showOnStatusBar()
         verify(overlayView, times(1)).update()
@@ -145,16 +155,14 @@ class BatteryBarDelegateTest {
     @Config(sdk = [(Build.VERSION_CODES.O)])
     @Test
     fun updateBatteryLevel_API26_powerSaverOn() {
-        val level = 80
-        val scale = 100
         `when`(overlayViewManager.displayWidth).thenReturn(1000)
         `when`(userSettings.showOnStatusBar()).thenReturn(true)
+        `when`(userSettings.getBatteryChargeLimit()).thenReturn(100)
         `when`(powerManager.isPowerSaveMode).thenReturn(true)
+        `when`(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)).thenReturn(80)
 
-        batteryBarDelegate.updateBatteryLevel(level, scale)
+        batteryBarDelegate.updateBatteryLevel()
 
-        assertThat(batteryBarDelegate.batteryLevel, `is`(level))
-        assertThat(batteryBarDelegate.batteryScale, `is`(scale))
         verify(overlayView, times(1)).setWidth(800)
         verify(overlayView, times(1)).allowViewToExtendOutsideScreen(false)
         verify(userSettings, times(1)).showOnStatusBar()
@@ -164,16 +172,14 @@ class BatteryBarDelegateTest {
     @Config(sdk = [(Build.VERSION_CODES.N_MR1)])
     @Test
     fun updateBatteryLevel_API25() {
-        val level = 80
-        val scale = 100
         `when`(overlayViewManager.displayWidth).thenReturn(1000)
         `when`(userSettings.showOnStatusBar()).thenReturn(true)
+        `when`(userSettings.getBatteryChargeLimit()).thenReturn(80)
+        `when`(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)).thenReturn(40)
 
-        batteryBarDelegate.updateBatteryLevel(level, scale)
+        batteryBarDelegate.updateBatteryLevel()
 
-        assertThat(batteryBarDelegate.batteryLevel, `is`(level))
-        assertThat(batteryBarDelegate.batteryScale, `is`(scale))
-        verify(overlayView, times(1)).setWidth(800)
+        verify(overlayView, times(1)).setWidth(500)
         verify(overlayView, times(1)).allowViewToExtendOutsideScreen(true)
         verify(userSettings, times(1)).showOnStatusBar()
         verify(overlayView, times(1)).update()

@@ -21,7 +21,7 @@ class HandlerTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         handler = MainService.Handler(context)
     }
 

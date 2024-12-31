@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity(), SeekBarBindingAdapter.OnProgressChange
         binding.isBatteryBarEnabled = userSettings.isBatteryBarEnabled()
         binding.batteryBarWidth = userSettings.getBatteryBarWidth()
         binding.showOnStatusBar = userSettings.showOnStatusBar()
+        binding.batteryChargeLimit = userSettings.getBatteryChargeLimit()
 
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
         binding.statusBarHeight =
@@ -47,6 +48,17 @@ class MainActivity : AppCompatActivity(), SeekBarBindingAdapter.OnProgressChange
                 } else {
                     32
                 }
+
+        binding.numberPickerChargeLimit.apply {
+            minValue = 1
+            maxValue = 100
+            value = binding.batteryChargeLimit
+            setOnValueChangedListener { _, _, newVal ->
+                userSettings.setBatteryChargeLimit(newVal)
+                binding.batteryChargeLimit = newVal
+                serviceHandler.startService()
+            }
+        }
 
         serviceHandler.startService()
 

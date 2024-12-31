@@ -3,7 +3,7 @@ package com.nagopy.android.overlaybatterybar
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,7 +22,7 @@ class UserSettingsTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application)
         sharedPreferences.edit().clear()
         userSettings = UserSettings(sharedPreferences)
@@ -56,6 +56,20 @@ class UserSettingsTest {
 
         userSettings.setShowOnStatusBar(true)
         assertThat(userSettings.showOnStatusBar(), `is`(true))
+    }
+
+    @Test
+    fun testBatteryChargeLimit() {
+        assertThat(userSettings.getBatteryChargeLimit(), `is`(100))
+
+        userSettings.setBatteryChargeLimit(50)
+        assertThat(userSettings.getBatteryChargeLimit(), `is`(50))
+
+        userSettings.setBatteryChargeLimit(0)
+        assertThat(userSettings.getBatteryChargeLimit(), `is`(1))
+
+        userSettings.setBatteryChargeLimit(101)
+        assertThat(userSettings.getBatteryChargeLimit(), `is`(100))
     }
 
 }
