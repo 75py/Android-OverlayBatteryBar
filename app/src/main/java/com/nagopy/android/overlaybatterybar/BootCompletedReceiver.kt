@@ -1,19 +1,30 @@
 package com.nagopy.android.overlaybatterybar
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.github.salomonbrys.kodein.android.KodeinBroadcastReceiver
-import com.github.salomonbrys.kodein.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.instance
 
-class BootCompletedReceiver : KodeinBroadcastReceiver() {
+class BootCompletedReceiver : BroadcastReceiver(), DIAware {
+
+    override lateinit var di: DI
 
     val userSettings: UserSettings by instance()
     val serviceHandler: MainService.Handler by instance()
 
-    override fun onBroadcastReceived(context: Context, intent: Intent) {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        if (context == null) return
+
+        di = context.asApp().di
+
+        execute(userSettings, serviceHandler)
+    }
+
+    fun execute(userSettings: UserSettings, serviceHandler: MainService.Handler) {
         if (userSettings.isBatteryBarEnabled()) {
             serviceHandler.startService()
         }
     }
-
 }

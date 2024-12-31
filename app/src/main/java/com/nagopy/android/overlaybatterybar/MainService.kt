@@ -5,6 +5,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
@@ -12,15 +13,16 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.github.salomonbrys.kodein.android.KodeinService
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.with
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import timber.log.Timber
 
-class MainService : KodeinService() {
+class MainService : Service(), DIAware {
 
-    val batteryBarDelegate: BatteryBarDelegate by with(this).instance()
+    override val di by closestDI()
+
+    val batteryBarDelegate: BatteryBarDelegate by instance()
 
     val notificationManager: NotificationManager by instance()
 
@@ -29,8 +31,6 @@ class MainService : KodeinService() {
     override fun onCreate() {
         super.onCreate()
         Timber.d("onCreate")
-
-        inject(appKodein())
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()

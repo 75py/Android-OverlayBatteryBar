@@ -2,18 +2,17 @@ package com.nagopy.android.overlaybatterybar
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.res.Configuration
 import android.os.Build
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.android.androidServiceScope
-import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.scopedSingleton
-import com.github.salomonbrys.kodein.singleton
+import org.kodein.di.bind
+import org.kodein.di.singleton
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.kodein.di.DI
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.*
@@ -25,7 +24,6 @@ import org.robolectric.android.controller.ServiceController
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class)
 class MainServiceTest {
 
     lateinit var app: App
@@ -38,16 +36,14 @@ class MainServiceTest {
     @Mock
     lateinit var notificationManager: NotificationManager
 
-    val testModule = Kodein.Module(allowSilentOverride = true) {
-        bind<BatteryBarDelegate>() with scopedSingleton(androidServiceScope) { batteryBarDelegate }
-        bind<NotificationManager>() with singleton { notificationManager }
-    }
-
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        app = RuntimeEnvironment.application.asApp()
-        app.kodein.addImport(testModule, true)
+        app = RuntimeEnvironment.getApplication().asApp()
+        app.di = DI {
+            bind<BatteryBarDelegate>() with singleton { batteryBarDelegate }
+            bind<NotificationManager>() with singleton { notificationManager }
+        }
 
         mainServiceController = Robolectric.buildService(MainService::class.java).create()
     }
@@ -96,7 +92,7 @@ class MainServiceTest {
 
     @Test
     fun onConfigurationChanged() {
-        mainServiceController.get().onConfigurationChanged(null)
+        mainServiceController.get().onConfigurationChanged(mock(Configuration::class.java))
         verify(batteryBarDelegate, times(1)).stop()
         verify(batteryBarDelegate, times(1)).start()
     }
