@@ -34,6 +34,8 @@ class BatteryBarDelegateTest {
     @Mock
     lateinit var overlayViewManager: OverlayViewManager
     @Mock
+    lateinit var displaySize: DisplaySize
+    @Mock
     lateinit var userSettings: UserSettings
     @Mock
     lateinit var overlayView: OverlayView<View>
@@ -45,7 +47,7 @@ class BatteryBarDelegateTest {
         doNothing().`when`(context).unregisterReceiver(any(BroadcastReceiver::class.java))
         `when`(overlayViewManager.newOverlayView(any(View::class.java))).thenReturn(overlayView)
 
-        batteryBarDelegate = BatteryBarDelegate(context, powerManager, batteryManager, overlayViewManager, userSettings)
+        batteryBarDelegate = BatteryBarDelegate(context, powerManager, batteryManager, overlayViewManager, displaySize, userSettings)
 
         reset(powerManager)
         reset(overlayViewManager)
@@ -135,10 +137,59 @@ class BatteryBarDelegateTest {
         assertThat(batteryLevel, `is`(80))
     }
 
+    @Test
+    fun calculateBatteryBarPositionAndWidth() {
+        data class TestCase(
+            val displayWidth: Int,
+            val roundedCorner: Int,
+            val cutoutWidth: Int,
+            val isCutoutLeft: Boolean,
+            val showOnStatusBar: Boolean,
+            val batteryLevel: Int,
+            val chargeLimit: Int,
+            val expectedPosition: Int,
+            val expectedWidth: Int,
+        )
+        listOf(
+            TestCase(displayWidth = 1000, roundedCorner = 0, cutoutWidth = 0, isCutoutLeft = false, showOnStatusBar = true, batteryLevel = 80, chargeLimit = 80, expectedPosition = 0, expectedWidth = 1000),
+            TestCase(displayWidth = 1000, roundedCorner = 0, cutoutWidth = 0, isCutoutLeft = false, showOnStatusBar = true, batteryLevel = 40, chargeLimit = 80, expectedPosition = 0, expectedWidth = 500),
+            TestCase(displayWidth = 1000, roundedCorner = 0, cutoutWidth = 0, isCutoutLeft = false, showOnStatusBar = false, batteryLevel = 80, chargeLimit = 80, expectedPosition = 0, expectedWidth = 1000),
+            TestCase(displayWidth = 1000, roundedCorner = 0, cutoutWidth = 0, isCutoutLeft = false, showOnStatusBar = false, batteryLevel = 40, chargeLimit = 80, expectedPosition = 0, expectedWidth = 500),
+            TestCase(displayWidth = 1000, roundedCorner = 100, cutoutWidth = 0, isCutoutLeft = false, showOnStatusBar = true, batteryLevel = 80, chargeLimit = 80, expectedPosition = 100, expectedWidth = 800),
+            TestCase(displayWidth = 1000, roundedCorner = 100, cutoutWidth = 0, isCutoutLeft = false, showOnStatusBar = true, batteryLevel = 40, chargeLimit = 80, expectedPosition = 100, expectedWidth = 400),
+            TestCase(displayWidth = 1000, roundedCorner = 100, cutoutWidth = 0, isCutoutLeft = false, showOnStatusBar = false, batteryLevel = 80, chargeLimit = 80, expectedPosition = 0, expectedWidth = 1000),
+            TestCase(displayWidth = 1000, roundedCorner = 100, cutoutWidth = 0, isCutoutLeft = false, showOnStatusBar = false, batteryLevel = 40, chargeLimit = 80, expectedPosition = 0, expectedWidth = 500),
+            // 左側にノッチがある場合
+            TestCase(displayWidth = 1000, roundedCorner = 100, cutoutWidth = 150, isCutoutLeft = true, showOnStatusBar = true, batteryLevel = 80, chargeLimit = 80, expectedPosition = 150, expectedWidth = 750),
+            // 右側にノッチがある場合
+            TestCase(displayWidth = 1000, roundedCorner = 100, cutoutWidth = 150, isCutoutLeft = false, showOnStatusBar = true, batteryLevel = 80, chargeLimit = 80, expectedPosition = 100, expectedWidth = 750),
+        ).forEach {
+            `when`(displaySize.calc()).thenReturn(DisplaySize.Result(
+                displayWidth = it.displayWidth,
+                roundedCornerRadius = it.roundedCorner,
+                cutoutWidth = it.cutoutWidth,
+                isCutoutLeft = it.isCutoutLeft
+            ))
+            `when`(userSettings.showOnStatusBar()).thenReturn(it.showOnStatusBar)
+            `when`(userSettings.getBatteryChargeLimit()).thenReturn(it.chargeLimit)
+            `when`(batteryBarDelegate.getCurrentBatteryLevel()).thenReturn(it.batteryLevel)
+
+            val positionAndWidth = batteryBarDelegate.calculateBatteryBarPositionAndWidth()
+
+            assertThat(positionAndWidth.position, `is`(it.expectedPosition))
+            assertThat(positionAndWidth.width, `is`(it.expectedWidth))
+        }
+    }
+
     @Config(sdk = [(Build.VERSION_CODES.O)])
     @Test
     fun updateBatteryLevel_API26() {
-        `when`(overlayViewManager.displayWidth).thenReturn(1000)
+        `when`(displaySize.calc()).thenReturn(DisplaySize.Result(
+            displayWidth = 1000,
+            roundedCornerRadius = 0,
+            cutoutWidth = 0,
+            isCutoutLeft = false
+        ))
         `when`(userSettings.showOnStatusBar()).thenReturn(true)
         `when`(userSettings.getBatteryChargeLimit()).thenReturn(80)
         `when`(powerManager.isPowerSaveMode).thenReturn(false)
@@ -148,14 +199,19 @@ class BatteryBarDelegateTest {
 
         verify(overlayView, times(1)).setWidth(1000)
         verify(overlayView, times(1)).allowViewToExtendOutsideScreen(true)
-        verify(userSettings, times(1)).showOnStatusBar()
+        verify(userSettings, times(2)).showOnStatusBar()
         verify(overlayView, times(1)).update()
     }
 
     @Config(sdk = [(Build.VERSION_CODES.O)])
     @Test
     fun updateBatteryLevel_API26_powerSaverOn() {
-        `when`(overlayViewManager.displayWidth).thenReturn(1000)
+        `when`(displaySize.calc()).thenReturn(DisplaySize.Result(
+            displayWidth = 1000,
+            roundedCornerRadius = 0,
+            cutoutWidth = 0,
+            isCutoutLeft = false
+        ))
         `when`(userSettings.showOnStatusBar()).thenReturn(true)
         `when`(userSettings.getBatteryChargeLimit()).thenReturn(100)
         `when`(powerManager.isPowerSaveMode).thenReturn(true)
@@ -165,14 +221,19 @@ class BatteryBarDelegateTest {
 
         verify(overlayView, times(1)).setWidth(800)
         verify(overlayView, times(1)).allowViewToExtendOutsideScreen(false)
-        verify(userSettings, times(1)).showOnStatusBar()
+        verify(userSettings, times(2)).showOnStatusBar()
         verify(overlayView, times(1)).update()
     }
 
     @Config(sdk = [(Build.VERSION_CODES.N_MR1)])
     @Test
     fun updateBatteryLevel_API25() {
-        `when`(overlayViewManager.displayWidth).thenReturn(1000)
+        `when`(displaySize.calc()).thenReturn(DisplaySize.Result(
+            displayWidth = 1000,
+            roundedCornerRadius = 0,
+            cutoutWidth = 0,
+            isCutoutLeft = false
+        ))
         `when`(userSettings.showOnStatusBar()).thenReturn(true)
         `when`(userSettings.getBatteryChargeLimit()).thenReturn(80)
         `when`(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)).thenReturn(40)
@@ -181,7 +242,7 @@ class BatteryBarDelegateTest {
 
         verify(overlayView, times(1)).setWidth(500)
         verify(overlayView, times(1)).allowViewToExtendOutsideScreen(true)
-        verify(userSettings, times(1)).showOnStatusBar()
+        verify(userSettings, times(2)).showOnStatusBar()
         verify(overlayView, times(1)).update()
     }
 
