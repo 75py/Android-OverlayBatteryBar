@@ -4,11 +4,13 @@ import android.app.Application
 import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
+import android.hardware.display.DisplayManager
 import android.os.BatteryManager
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import android.preference.PreferenceManager
+import android.view.WindowManager
 import com.nagopy.android.overlayviewmanager.OverlayViewManager
 import org.kodein.di.*
 import timber.log.Timber
@@ -37,7 +39,12 @@ class App : Application(), DIAware {
         }
         bind<MainService.Handler>() with singleton { MainService.Handler(instance()) }
         bind<BatteryBarDelegate>() with singleton {
-            BatteryBarDelegate(instance(), instance(), instance(), instance(), instance())
+            BatteryBarDelegate(instance(), instance(), instance(), instance(), instance(), instance())
+        }
+        bind<WindowManager>() with singleton { instance<Context>().getSystemService(WINDOW_SERVICE) as WindowManager }
+        bind<DisplayManager>() with singleton { instance<Context>().getSystemService(DISPLAY_SERVICE) as DisplayManager }
+        bind<DisplaySize>() with singleton {
+            DisplaySize(instance(), instance())
         }
     }
 }
