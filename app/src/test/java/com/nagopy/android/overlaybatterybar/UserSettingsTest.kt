@@ -72,4 +72,43 @@ class UserSettingsTest {
         assertThat(userSettings.getBatteryChargeLimit(), `is`(100))
     }
 
+    @Test
+    fun normalBatteryColor() {
+        assertThat(userSettings.getNormalBatteryColor(), `is`(android.graphics.Color.WHITE))
+
+        userSettings.setNormalBatteryColor(android.graphics.Color.BLUE)
+        assertThat(userSettings.getNormalBatteryColor(), `is`(android.graphics.Color.BLUE))
+    }
+
+    @Test
+    fun chargingBatteryColor() {
+        assertThat(userSettings.getChargingBatteryColor(), `is`(android.graphics.Color.GREEN))
+
+        userSettings.setChargingBatteryColor(android.graphics.Color.YELLOW)
+        assertThat(userSettings.getChargingBatteryColor(), `is`(android.graphics.Color.YELLOW))
+    }
+
+    @Test
+    fun chargingAnimationEnabled() {
+        assertThat(userSettings.isChargingAnimationEnabled(), `is`(true))
+
+        userSettings.setChargingAnimationEnabled(false)
+        assertThat(userSettings.isChargingAnimationEnabled(), `is`(false))
+
+        userSettings.setChargingAnimationEnabled(true)
+        assertThat(userSettings.isChargingAnimationEnabled(), `is`(true))
+    }
+
+    @Test
+    fun gradientColorEnabled() {
+        assertThat(userSettings.isGradientColorEnabled(), `is`(false))
+
+        userSettings.setGradientColorEnabled(true)
+        assertThat(userSettings.isGradientColorEnabled(), `is`(true))
+
+        userSettings.setGradientColorEnabled(false)
+        assertThat(userSettings.isGradientColorEnabled(), `is`(false))
+    }
+    }
+
 }
