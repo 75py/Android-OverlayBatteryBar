@@ -40,6 +40,8 @@ class MainActivity : AppCompatActivity(), SeekBarBindingAdapter.OnProgressChange
         binding.batteryBarWidth = userSettings.getBatteryBarWidth()
         binding.showOnStatusBar = userSettings.showOnStatusBar()
         binding.batteryChargeLimit = userSettings.getBatteryChargeLimit()
+        binding.gradientColorEnabled = userSettings.isGradientColorEnabled()
+        binding.chargingAnimationEnabled = userSettings.isChargingAnimationEnabled()
 
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
         binding.statusBarHeight =
@@ -80,6 +82,8 @@ class MainActivity : AppCompatActivity(), SeekBarBindingAdapter.OnProgressChange
             R.id.button_request_overlay_permisson -> overlayViewManager.requestOverlayPermission()
             R.id.switch_battery_bar -> switchBatteryBar((view as CompoundButton).isChecked)
             R.id.checkbox_show_on_status_bar -> switchShowOnStatusBar((view as CompoundButton).isChecked)
+            R.id.checkbox_gradient_colors -> switchGradientColors((view as CompoundButton).isChecked)
+            R.id.checkbox_charging_animations -> switchChargingAnimations((view as CompoundButton).isChecked)
         }
     }
 
@@ -94,6 +98,20 @@ class MainActivity : AppCompatActivity(), SeekBarBindingAdapter.OnProgressChange
         Timber.d("switchShowOnStatusBar %s", enabled)
         userSettings.setShowOnStatusBar(enabled)
         binding.showOnStatusBar = enabled
+        serviceHandler.startService()
+    }
+
+    fun switchGradientColors(enabled: Boolean) {
+        Timber.d("switchGradientColors %s", enabled)
+        userSettings.setGradientColorEnabled(enabled)
+        binding.gradientColorEnabled = enabled
+        serviceHandler.startService()
+    }
+
+    fun switchChargingAnimations(enabled: Boolean) {
+        Timber.d("switchChargingAnimations %s", enabled)
+        userSettings.setChargingAnimationEnabled(enabled)
+        binding.chargingAnimationEnabled = enabled
         serviceHandler.startService()
     }
 

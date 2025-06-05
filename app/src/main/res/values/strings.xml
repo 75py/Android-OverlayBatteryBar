@@ -10,4 +10,11 @@
     <string name="battery_charge_limit">Battery Charge Limit (%)</string>
     <string name="action_more" translatable="false">More</string>
     <string name="action_license" translatable="false">Open Source License</string>
+    
+    <!-- New strings for color and animation features -->
+    <string name="battery_colors">Battery Colors</string>
+    <string name="normal_color">Normal Color</string>
+    <string name="charging_color">Charging Color</string>
+    <string name="enable_gradient">Enable Gradient Colors</string>
+    <string name="enable_animations">Enable Charging Animations</string>
 </resources>

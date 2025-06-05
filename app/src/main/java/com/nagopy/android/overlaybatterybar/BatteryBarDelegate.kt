@@ -1,6 +1,8 @@
 package com.nagopy.android.overlaybatterybar
 
 import android.annotation.SuppressLint
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -27,7 +29,7 @@ class BatteryBarDelegate(
 ) {
 
     val barView = overlayViewManager.newOverlayView(View(context).apply {
-        setBackgroundColor(Color.WHITE)
+        setBackgroundColor(userSettings.getNormalBatteryColor())
         layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
     }).apply {
         setHeight(6)
@@ -42,6 +44,8 @@ class BatteryBarDelegate(
     }
 
     var isStarted: Boolean = false
+    private var currentChargingState: Boolean = false
+    private var colorAnimator: ValueAnimator? = null
 
     fun start() {
         Timber.d("startService isStarted:%s", isStarted)
@@ -61,6 +65,8 @@ class BatteryBarDelegate(
             Timber.d("stop")
             context.unregisterReceiver(receiver)
             barView.hide()
+            colorAnimator?.cancel()
+            colorAnimator = null
         }
         isStarted = false
     }
@@ -129,6 +135,12 @@ class BatteryBarDelegate(
 
     fun updateBatteryLevel() {
         val bar = calculateBatteryBarPositionAndWidth()
+        val batteryLevel = getCurrentBatteryLevel()
+        
+        // Get the current charging state from the last broadcast
+        val newColor = calculateBatteryColor(batteryLevel, currentChargingState)
+        val currentColor = (barView.view.background as? android.graphics.drawable.ColorDrawable)?.color
+            ?: userSettings.getNormalBatteryColor()
 
         barView.apply {
             setX(bar.position)
@@ -140,6 +152,11 @@ class BatteryBarDelegate(
             }
         }
 
+        // Animate color change if different
+        if (currentColor != newColor) {
+            animateColorChange(currentColor, newColor)
+        }
+
         barView.update()
     }
 
@@ -147,14 +164,65 @@ class BatteryBarDelegate(
         return batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
     }
 
+    private fun calculateBatteryColor(batteryLevel: Int, isCharging: Boolean): Int {
+        return when {
+            isCharging -> userSettings.getChargingBatteryColor()
+            userSettings.isGradientColorEnabled() -> {
+                // Create gradient from red (low) to green (high)
+                when {
+                    batteryLevel <= 20 -> Color.RED
+                    batteryLevel <= 50 -> {
+                        // Interpolate between red and yellow
+                        val progress = (batteryLevel - 20) / 30f
+                        interpolateColor(Color.RED, Color.YELLOW, progress)
+                    }
+                    batteryLevel <= 80 -> {
+                        // Interpolate between yellow and green
+                        val progress = (batteryLevel - 50) / 30f
+                        interpolateColor(Color.YELLOW, Color.GREEN, progress)
+                    }
+                    else -> Color.GREEN
+                }
+            }
+            else -> userSettings.getNormalBatteryColor()
+        }
+    }
+
+    private fun interpolateColor(startColor: Int, endColor: Int, progress: Float): Int {
+        val clampedProgress = progress.coerceIn(0f, 1f)
+        return ArgbEvaluator().evaluate(clampedProgress, startColor, endColor) as Int
+    }
+
+    private fun animateColorChange(fromColor: Int, toColor: Int) {
+        if (!userSettings.isChargingAnimationEnabled()) {
+            barView.view.setBackgroundColor(toColor)
+            return
+        }
+
+        colorAnimator?.cancel()
+        colorAnimator = ValueAnimator.ofObject(ArgbEvaluator(), fromColor, toColor).apply {
+            duration = 500 // 500ms animation
+            addUpdateListener { animator ->
+                val color = animator.animatedValue as Int
+                barView.view.setBackgroundColor(color)
+            }
+            start()
+        }
+    }
+
     val receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 Intent.ACTION_BATTERY_CHANGED -> {
-                    updateBatteryLevel()
-
                     val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
                     val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
+                    
+                    // Update charging state and trigger color change if needed
+                    val chargingStateChanged = currentChargingState != isCharging
+                    currentChargingState = isCharging
+                    
+                    updateBatteryLevel()
+
                     batteryChangedCallback?.invoke(getCurrentBatteryLevel(), isCharging)
                 }
                 PowerManager.ACTION_POWER_SAVE_MODE_CHANGED -> {

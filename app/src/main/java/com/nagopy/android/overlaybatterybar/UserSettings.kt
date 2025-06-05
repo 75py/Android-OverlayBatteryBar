@@ -2,6 +2,7 @@ package com.nagopy.android.overlaybatterybar
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
+import android.graphics.Color
 import androidx.annotation.IntRange
 
 class UserSettings(val sharedPreferences: SharedPreferences) {
@@ -38,6 +39,42 @@ class UserSettings(val sharedPreferences: SharedPreferences) {
     fun setBatteryChargeLimit(@IntRange(from = 1, to = 100) limit: Int) {
         val newLimit = limit.coerceIn(1, 100)
         sharedPreferences.edit().putInt("batteryChargeLimit", newLimit).commit()
+    }
+
+    // Color settings for normal state
+    fun getNormalBatteryColor(): Int
+            = sharedPreferences.getInt("normalBatteryColor", Color.WHITE)
+
+    @SuppressLint("ApplySharedPref")
+    fun setNormalBatteryColor(color: Int) {
+        sharedPreferences.edit().putInt("normalBatteryColor", color).commit()
+    }
+
+    // Color settings for charging state
+    fun getChargingBatteryColor(): Int
+            = sharedPreferences.getInt("chargingBatteryColor", Color.GREEN)
+
+    @SuppressLint("ApplySharedPref")
+    fun setChargingBatteryColor(color: Int) {
+        sharedPreferences.edit().putInt("chargingBatteryColor", color).commit()
+    }
+
+    // Charging animation enabled
+    fun isChargingAnimationEnabled(): Boolean
+            = sharedPreferences.getBoolean("chargingAnimationEnabled", true)
+
+    @SuppressLint("ApplySharedPref")
+    fun setChargingAnimationEnabled(enabled: Boolean) {
+        sharedPreferences.edit().putBoolean("chargingAnimationEnabled", enabled).commit()
+    }
+
+    // Color gradient based on battery level
+    fun isGradientColorEnabled(): Boolean
+            = sharedPreferences.getBoolean("gradientColorEnabled", false)
+
+    @SuppressLint("ApplySharedPref")
+    fun setGradientColorEnabled(enabled: Boolean) {
+        sharedPreferences.edit().putBoolean("gradientColorEnabled", enabled).commit()
     }
 
 }
