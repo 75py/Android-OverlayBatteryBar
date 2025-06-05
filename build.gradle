@@ -4,16 +4,21 @@ buildscript {
     ext.kotlin_version = '2.0.0'
     repositories {
         google()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.7.3'
+        classpath 'com.android.tools.build:gradle:8.1.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.6'
     }
 }
 
-plugins {
-    id 'com.android.application' version '8.7.3' apply false
-    id 'org.jetbrains.kotlin.android' version '2.0.0' apply false
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 task clean(type: Delete) {

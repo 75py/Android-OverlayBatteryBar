@@ -35,6 +35,14 @@
         <variable
             name="batteryChargeLimit"
             type="int" />
+            
+        <variable
+            name="gradientColorEnabled"
+            type="boolean" />
+            
+        <variable
+            name="chargingAnimationEnabled"
+            type="boolean" />
     </data>
 
     <LinearLayout
@@ -95,5 +103,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="@{canDrawOverlays &amp;&amp; isBatteryBarEnabled}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin"
+            android:text="@string/battery_colors"
+            android:textStyle="bold" />
+
+        <CheckBox
+            android:id="@+id/checkbox_gradient_colors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:checked="@{gradientColorEnabled}"
+            android:enabled="@{canDrawOverlays &amp;&amp; isBatteryBarEnabled}"
+            android:onClick="onClick"
+            android:text="@string/enable_gradient" />
+
+        <CheckBox
+            android:id="@+id/checkbox_charging_animations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin"
+            android:checked="@{chargingAnimationEnabled}"
+            android:enabled="@{canDrawOverlays &amp;&amp; isBatteryBarEnabled}"
+            android:onClick="onClick"
+            android:text="@string/enable_animations" />
     </LinearLayout>
 </layout>
