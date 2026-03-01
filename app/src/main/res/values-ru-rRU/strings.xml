@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name" translatable="false">Overlay Battery Bar</string>
+    <string name="msg_running_title">Overlay Battery Bar работает</string>
+    <string name="msg_running_text">Нажмите, чтобы отключить Overlay Battery Bar.</string>
+    <string name="request_overlay_permisson">Разрешить отображение поверх других приложений</string>
+    <string name="overlay_permission_is_allowed">Отображение поверх других приложений разрешено</string>
+    <string name="switch_battery_bar_on">Остановить индикатор батареи</string>
+    <string name="switch_battery_bar_off">Запустить индикатор батареи</string>
+    <string name="show_on_status_bar">Показывать в строке состояния</string>
+    <string name="battery_charge_limit">Ограничение заряда батареи (%)</string>
+    <string name="action_more" translatable="false">More</string>
+    <string name="action_license" translatable="false">Open Source License</string>
+</resources>
