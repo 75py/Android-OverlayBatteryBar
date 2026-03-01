@@ -1,4 +1,8 @@
+![Logo](app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp)
+
 # Android-OverlayBatteryBar [![codebeat badge](https://codebeat.co/badges/085e14f4-4187-4497-ae2b-3ed67c42e41d)](https://codebeat.co/projects/github-com-75py-android-overlaybatterybar-main)
+
+**English** | [Русская](README_RU.md)
 
 **Android-OverlayBatteryBar** is an Android application that displays a battery level bar at the top of the screen, overlaying other applications.
 
@@ -28,7 +32,7 @@ The battery bar will now be displayed at the top of the screen, overlaying other
 
 ## Download
 
-https://play.google.com/store/apps/details?id=com.nagopy.android.overlaybatterybar
+[<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.nagopy.android.overlaybatterybar)
 
 ## License
 
