@@ -32,7 +32,7 @@
 
 ## Скачать
 
-[https://play.google.com/store/apps/details?id=com.nagopy.android.overlaybatterybar](https://play.google.com/store/apps/details?id=com.nagopy.android.overlaybatterybar)
+[<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/static/images/badges/ru_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.nagopy.android.overlaybatterybar)
 
 ## Лицензия
 
